@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Defines a class Server that paginates a database of popular baby names
+Defines class Server that paginates a database of popular baby names
 """
 import csv
 import math
-from typing import List, Tuple, Dict
+from typing import List, Tuple
 
 
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
@@ -58,43 +58,9 @@ class Server:
         assert type(page_size) is int and page_size > 0
 
         dataset = self.dataset()
+        data_length = len(dataset)
         try:
             index = index_range(page, page_size)
             return dataset[index[0]:index[1]]
         except IndexError:
             return []
-
-    def get_hyper(self, page: int = 1, page_size: int = 10) -> Dict:
-        """
-        Take 2 int argumetns and returns a dictionary containing the following
-        key-value pairs:
-            page_size: the length of the returned dataset
-            page: the current page number
-            data: the dataset page
-            next_page: number of the next page, None if no next page
-            prev_page: number of the previous page, None if no previous page
-            total_pages: total number of pages in the dataset as an integer
-
-        Args:
-            page(int): requested page
-            page_size(int): number of records per page
-        """
-        dataset = self.dataset()
-        data_length = len(dataset)
-        data = self.get_page(page, page_size)
-        response = {}
-        response['page_size'] = len(data)
-        response['page'] = page
-        response['data'] = data
-        total_pages = math.ceil(data_length / page_size)
-        if page + 1 < total_pages:
-            response['next_page'] = page + 1
-        else:
-            response['next_page'] = None
-        if page - 1 > 1:
-            response['prev_page'] = page - 1
-        else:
-            response['prev_page'] = None
-        response['total_pages'] = total_pages
-
-        return response
